@@ -28,9 +28,12 @@ interface EmployeeLayoutProps {
 
 const EmployeeLayout = ({ children }: EmployeeLayoutProps) => {
   const { logout, user } = useAuth();
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
+  
+  // Check if sidebar is collapsed using state from useSidebar
+  const collapsed = state === "collapsed";
 
   const menuItems = [
     {
@@ -74,7 +77,7 @@ const EmployeeLayout = ({ children }: EmployeeLayoutProps) => {
           "transition-all duration-300 bg-sidebar h-screen",
           collapsed ? "w-20" : "w-64"
         )}
-        collapsible
+        collapsible="icon"
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
           {!collapsed && (

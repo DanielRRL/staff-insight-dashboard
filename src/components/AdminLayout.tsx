@@ -27,10 +27,13 @@ interface AdminLayoutProps {
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const { logout, user } = useAuth();
-  const { collapsed } = useSidebar();
+  const { state } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
   const [openGroup, setOpenGroup] = useState("employees");
+  
+  // Check if sidebar is collapsed using state from useSidebar
+  const collapsed = state === "collapsed";
 
   const menuItems = [
     {
@@ -86,7 +89,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           "transition-all duration-300 bg-sidebar h-screen",
           collapsed ? "w-20" : "w-64"
         )}
-        collapsible
+        collapsible="icon"
       >
         <div className="flex items-center justify-between h-16 px-4 border-b border-sidebar-border">
           {!collapsed && (
@@ -108,8 +111,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           {menuItems.map((item) => (
             <SidebarGroup
               key={item.id}
-              open={openGroup === item.id || isGroupActive(item.submenu)}
-              onOpenChange={() => setOpenGroup(item.id)}
+              defaultOpen={openGroup === item.id || isGroupActive(item.submenu)}
             >
               <div className="flex items-center px-3 py-2 mb-1 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md" 
                    onClick={() => setOpenGroup(openGroup === item.id ? "" : item.id)}>
