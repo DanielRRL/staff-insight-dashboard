@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -109,42 +110,47 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         
         <SidebarContent className="p-2">
           {menuItems.map((item) => (
-            <SidebarGroup
-              key={item.id}
-              defaultOpen={openGroup === item.id || isGroupActive(item.submenu)}
-            >
-              <div className="flex items-center px-3 py-2 mb-1 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md" 
-                   onClick={() => setOpenGroup(openGroup === item.id ? "" : item.id)}>
-                <item.icon className="mr-2 h-5 w-5" />
-                {!collapsed && (
-                  <>
-                    <span className="flex-1">{item.label}</span>
-                    {openGroup === item.id ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-                  </>
-                )}
-              </div>
+            <SidebarGroup key={item.id}>
+              <Collapsible
+                open={openGroup === item.id || isGroupActive(item.submenu)}
+                onOpenChange={() => setOpenGroup(openGroup === item.id ? "" : item.id)}
+              >
+                <CollapsibleTrigger asChild>
+                  <div className="flex items-center px-3 py-2 mb-1 cursor-pointer text-sidebar-foreground hover:bg-sidebar-accent/50 rounded-md">
+                    <item.icon className="mr-2 h-5 w-5" />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1">{item.label}</span>
+                        {openGroup === item.id ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                      </>
+                    )}
+                  </div>
+                </CollapsibleTrigger>
 
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {!collapsed && item.submenu.map((subItem) => (
-                    <SidebarMenuItem key={subItem.path}>
-                      <SidebarMenuButton asChild>
-                        <NavLink
-                          to={subItem.path}
-                          className={({ isActive }) =>
-                            cn(
-                              "flex items-center px-8 py-2 text-sm rounded-md",
-                              getNavLinkClass({ isActive })
-                            )
-                          }
-                        >
-                          {subItem.label}
-                        </NavLink>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
+                <CollapsibleContent>
+                  <SidebarGroupContent>
+                    <SidebarMenu>
+                      {!collapsed && item.submenu.map((subItem) => (
+                        <SidebarMenuItem key={subItem.path}>
+                          <SidebarMenuButton asChild>
+                            <NavLink
+                              to={subItem.path}
+                              className={({ isActive }) =>
+                                cn(
+                                  "flex items-center px-8 py-2 text-sm rounded-md",
+                                  getNavLinkClass({ isActive })
+                                )
+                              }
+                            >
+                              {subItem.label}
+                            </NavLink>
+                          </SidebarMenuButton>
+                        </SidebarMenuItem>
+                      ))}
+                    </SidebarMenu>
+                  </SidebarGroupContent>
+                </CollapsibleContent>
+              </Collapsible>
             </SidebarGroup>
           ))}
 
